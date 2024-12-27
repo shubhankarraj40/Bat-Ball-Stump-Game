@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bat Ball Stump Game</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Bat Ball Stump Game</h1>
+
+    <div>                       
+    <button
+      class="choice-button"
+      onclick="
+        const computerChoice = generateComputerChoice();
+        const resultMsg = getResult('Bat', computerChoice);
+        showResult('Bat', computerChoice, resultMsg);
+      "
+    >
+      <img src="bat.png" alt="Bat Image"
+      class="choice-image">
+    </button>
+
+    <button
+      class="choice-button"
+      onclick="
+        const computerChoice = generateComputerChoice();
+        const resultMsg = getResult('Ball', computerChoice);
+        showResult('Ball', computerChoice, resultMsg);
+      "
+    >
+    <img src="ball.png" alt="Bat Image"
+    class="choice-image">
+    </button>
+
+    <button
+      class="choice-button"
+      onclick="
+        const computerChoice = generateComputerChoice();
+        const resultMsg = getResult('Stump', computerChoice);
+        showResult('Stump', computerChoice, resultMsg);
+      "
+    >
+    <img src="stump.png" alt="Bat Image"
+    class="choice-image">
+    </button>
+
+  </div>
+    <h3 id="user-move"></h3>
+    <h3 id="computer-move"></h3>
+    <h3 id="result"></h3>
+    <h3 id="score"></h3>
+
+<div>
+  <button
+  class="button"
+  onclick="localStorage.clear()
+  resetScore();
+"
+>
+  Reset
+</div>
+   
+  </button>
+
+
+    <script>
+      let score;
+      let scoreStr = localStorage.getItem("Score"); //scoreStr: Retrieves the saved score from the browser's local storage. If no score is saved, scoreStr will be null.
+      resetScore(scoreStr);
+
+      function resetScore(scoreStr) {
+        score = scoreStr
+          ? JSON.parse(scoreStr)
+          : {
+              win: 0,
+              tie: 0,
+              loose: 0,
+            };
+
+        score.displayScore = function () {
+          return `Total No. of matches Win ${score.win}\nTies: ${score.tie}\nLosses: ${score.loose}`;
+        };
+        showResult();
+      }
+      function generateComputerChoice() {
+        const randomNumber = Math.floor(Math.random() * 3); // Generates 0, 1, or 2
+        if (randomNumber < 1) {
+          return "Bat";
+        } else if (randomNumber < 2) {
+          return "Ball";
+        } else {
+          return "Stump";
+        }
+      }
+
+      function getResult(userMove, computerMove) {
+        if (userMove === "Bat") {
+          if (computerMove === "Ball") {
+            score.win++;
+            return "User Won Mere Bhai";
+          } else if (computerMove === "Bat") {
+            score.tie++;
+            return "It's a Draw";
+          } else {
+            score.loose++;
+            return "Computer Won Mere Bhai";
+          }
+        } else if (userMove === "Ball") {
+          if (computerMove === "Ball") {
+            score.tie++;
+            return "It's a Draw";
+          } else if (computerMove === "Bat") {
+            score.loose++;
+            return "Computer Won Mere Bhai";
+          } else {
+            score.win++;
+            return "User Won Mere Bhai";
+          }
+        } else if (userMove === "Stump") {
+          if (computerMove === "Ball") {
+            score.win++;
+            return "User Won Mere Bhai";
+          } else if (computerMove === "Bat") {
+            score.loose++;
+            return "Computer Won Mere Bhai";
+          } else {
+            score.tie++;
+            return "It's a Draw";
+          }
+        }
+      }
+
+      function showResult(userMove, computerMove, result) {
+        localStorage.setItem("Score", JSON.stringify(score));
+
+        document.querySelector("#user-move").innerText =
+          userMove !== undefined ? `You have chosen ${userMove}` : "";
+        document.querySelector("#computer-move").innerText =
+          computerMove !== undefined ? `Computer choice is ${computerMove}` : "";
+        document.querySelector("#result").innerText =
+          result !== undefined ? `${result}` : "";
+        document.querySelector("#score").innerText = `${score.displayScore()}`;
+        // alert(
+        //   `You chose ${userMove}. Computer chose ${computerMove}. \n${result}.\n\n${score.displayScore()}`
+        // );
+      }
+    </script>
+  </body>
+</html>
